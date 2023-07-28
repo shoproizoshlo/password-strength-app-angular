@@ -13,12 +13,29 @@ import { Component } from '@angular/core';
 
       <div class="strength-meter">
         <div
-          class="strength-bar"
-          [ngStyle]="{ 'width.%': strengthPercentage }"
+          class="strength-bar bar-1"
+          [ngStyle]="{ 'width.%': strengthPercentage1 }"
+        ></div>
+        <div
+          class="strength-bar bar-2"
+          [ngStyle]="{ 'width.%': strengthPercentage2 }"
+        ></div>
+        <div
+          class="strength-bar bar-3"
+          [ngStyle]="{ 'width.%': strengthPercentage3 }"
         ></div>
       </div>
 
-      <div class="strength-label">{{ strengthLabel }}</div>
+      <div
+        class="strength-label"
+        [ngClass]="{
+          red: password.length > 0 && password.length < 8,
+          yellow: password.length >= 8 && strengthPercentage3 <= 66,
+          green: strengthPercentage3 > 66
+        }"
+      >
+        {{ strengthLabel }}
+      </div>
     </div>
   `,
   styles: [
@@ -32,10 +49,22 @@ import { Component } from '@angular/core';
         background-color: #f1f1f1;
         border-radius: 5px;
         overflow: hidden;
+        display: flex;
       }
 
       .strength-bar {
         height: 100%;
+      }
+
+      .bar-1 {
+        background-color: red;
+      }
+
+      .bar-2 {
+        background-color: yellow;
+      }
+
+      .bar-3 {
         background-color: #4caf50;
       }
 
@@ -43,34 +72,69 @@ import { Component } from '@angular/core';
         margin-top: 5px;
         font-size: 12px;
       }
+
+      .red {
+        color: red;
+      }
+
+      .yellow {
+        color: yellow;
+      }
+
+      .green {
+        color: #4caf50;
+      }
     `,
   ],
 })
 export class PasswordStrengthIndicatorComponent {
   password: string = '';
-  strengthPercentage: number = 0;
+  strengthPercentage1: number = 0;
+  strengthPercentage2: number = 0;
+  strengthPercentage3: number = 0;
   strengthLabel: string = '';
 
   checkPasswordStrength() {
-    const hasLetters = this.password.match(/[a-zA-Z]/);
-    const hasNumbers = this.password.match(/\d/);
-    const hasSymbols = this.password.match(
-      /[!@#$%^&*()_+{}\[\]:;<>,.?~\-=/\\]/
-    );
-
-    if (hasLetters && hasNumbers && hasSymbols) {
-      this.strengthPercentage = 100;
-      this.strengthLabel = 'Strong';
-    } else if (
-      (hasLetters && hasNumbers) ||
-      (hasLetters && hasSymbols) ||
-      (hasNumbers && hasSymbols)
-    ) {
-      this.strengthPercentage = 66;
-      this.strengthLabel = 'Medium';
+    const progressStep = 100 / 3;
+    if (this.password.length === 0) {
+      this.strengthPercentage1 = 0;
+      this.strengthPercentage2 = 0;
+      this.strengthPercentage3 = 0;
+      this.strengthLabel = '';
     } else {
-      this.strengthPercentage = 33;
-      this.strengthLabel = 'Weak';
+      const hasLetters = this.password.match(/[a-zA-Z]/);
+      const hasNumbers = this.password.match(/\d/);
+      const hasSymbols = this.password.match(
+        /[!@#$%^&*()_+{}\[\]:;<>,.?~\-=/\\]/
+      );
+
+      if (this.password.length < 8) {
+        this.strengthPercentage1 = 100;
+        this.strengthPercentage2 = 0;
+        this.strengthPercentage3 = 0;
+        this.strengthLabel = 'Weak';
+      } else {
+        if (hasLetters && hasNumbers && hasSymbols) {
+          this.strengthPercentage1 = 100;
+          this.strengthPercentage2 = 100;
+          this.strengthPercentage3 = 100;
+          this.strengthLabel = 'Strong';
+        } else if (
+          (hasLetters && hasNumbers) ||
+          (hasLetters && hasSymbols) ||
+          (hasNumbers && hasSymbols)
+        ) {
+          this.strengthPercentage1 = 100;
+          this.strengthPercentage2 = 100;
+          this.strengthPercentage3 = progressStep;
+          this.strengthLabel = 'Medium';
+        } else {
+          this.strengthPercentage1 = 100;
+          this.strengthPercentage2 = progressStep;
+          this.strengthPercentage3 = 0;
+          this.strengthLabel = 'Weak';
+        }
+      }
     }
   }
 }
