@@ -115,8 +115,8 @@ export class PasswordStrengthIndicatorComponent {
         this.strengthLabel = 'Weak';
       } else {
         if (hasLetters && hasNumbers && hasSymbols) {
-          this.strengthPercentage1 = 100;
-          this.strengthPercentage2 = 100;
+          this.strengthPercentage1 = 0;
+          this.strengthPercentage2 = 0;
           this.strengthPercentage3 = 100;
           this.strengthLabel = 'Strong';
         } else if (
@@ -124,9 +124,9 @@ export class PasswordStrengthIndicatorComponent {
           (hasLetters && hasSymbols) ||
           (hasNumbers && hasSymbols)
         ) {
-          this.strengthPercentage1 = 100;
+          this.strengthPercentage1 = 0;
           this.strengthPercentage2 = 100;
-          this.strengthPercentage3 = progressStep;
+          this.strengthPercentage3 = 0;
           this.strengthLabel = 'Medium';
         } else {
           this.strengthPercentage1 = 100;
