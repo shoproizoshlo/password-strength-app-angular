@@ -52,32 +52,25 @@ export class PasswordStrengthIndicatorComponent {
   strengthLabel: string = '';
 
   checkPasswordStrength() {
-    const lengthScore = this.password.length / 10;
-    const uppercaseScore = this.password.match(/[A-Z]/) ? 0.3 : 0;
-    const lowercaseScore = this.password.match(/[a-z]/) ? 0.3 : 0;
-    const numberScore = this.password.match(/\d/) ? 0.2 : 0;
-    const specialCharScore = this.password.match(
+    const hasLetters = this.password.match(/[a-zA-Z]/);
+    const hasNumbers = this.password.match(/\d/);
+    const hasSymbols = this.password.match(
       /[!@#$%^&*()_+{}\[\]:;<>,.?~\-=/\\]/
-    )
-      ? 0.2
-      : 0;
+    );
 
-    this.strengthPercentage =
-      (lengthScore +
-        uppercaseScore +
-        lowercaseScore +
-        numberScore +
-        specialCharScore) *
-      100;
-
-    if (this.strengthPercentage <= 25) {
-      this.strengthLabel = 'Weak';
-    } else if (this.strengthPercentage <= 50) {
-      this.strengthLabel = 'Moderate';
-    } else if (this.strengthPercentage <= 75) {
+    if (hasLetters && hasNumbers && hasSymbols) {
+      this.strengthPercentage = 100;
       this.strengthLabel = 'Strong';
+    } else if (
+      (hasLetters && hasNumbers) ||
+      (hasLetters && hasSymbols) ||
+      (hasNumbers && hasSymbols)
+    ) {
+      this.strengthPercentage = 66;
+      this.strengthLabel = 'Medium';
     } else {
-      this.strengthLabel = 'Very Strong';
+      this.strengthPercentage = 33;
+      this.strengthLabel = 'Weak';
     }
   }
 }
