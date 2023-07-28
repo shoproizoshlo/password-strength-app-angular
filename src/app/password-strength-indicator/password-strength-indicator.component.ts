@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-password-strength-indicator',
@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
       <input
         type="password"
         [(ngModel)]="password"
-        (ngModelChange)="checkPasswordStrength()"
+        (input)="checkPasswordStrength()"
         placeholder="Enter password"
       />
 
@@ -47,7 +47,7 @@ import { Component, Input } from '@angular/core';
   ],
 })
 export class PasswordStrengthIndicatorComponent {
-  @Input() password: string = '';
+  password: string = '';
   strengthPercentage: number = 0;
   strengthLabel: string = '';
 
